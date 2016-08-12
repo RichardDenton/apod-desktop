@@ -3,6 +3,7 @@
 #Sets the image as the desktop background - Only for Cinnamon desktops
 #Coded in Pyhton 3.5 and tested on Linux Mint
 #Richard Denton - 11/08/2016
+#apod-desktop v1.0
 
 import requests
 import subprocess

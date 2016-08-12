@@ -8,5 +8,5 @@ The script has so far been tested on Linux Mint 18 with a Cinnamon desktop.
 * Implement error checking so the script terminates if there are problems obataining the image
 * Implement easily editable options using constants
 * Implement a check so that the whole script doesn't run if today's image has already been downloaded
-* Look at the possibility of making the script work with other desktops
+* Look at the possibility of making the script work with other Linux desktops
 * Look at the possibility of retaining downloaded images rather than replace the image on each run

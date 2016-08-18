@@ -3,6 +3,8 @@ A simple Python script for downloading the NASA Astronomy Picture of the Day fro
 
 The script has so far been tested on Linux Mint 18 with a Cinnamon desktop.
 
+This script requires BeautifulSoup and lxml to run.
+
 ###Still to do###
 * ~~Improve the method of locating the image URL - possibly using BeautifulSoup~~
 * ~~Implement error checking so the script terminates if there are problems obataining the image~~

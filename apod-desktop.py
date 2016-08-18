@@ -1,35 +1,41 @@
 #!/usr/bin/python3
-#Downloads the current Astronomy Picture of the Day
-#Sets the image as the desktop background - Only for Cinnamon desktops
-#Coded in Pyhton 3.5 and tested on Linux Mint
-#Richard Denton - 11/08/2016
-#apod-desktop v1.0
+# Downloads the current Astronomy Picture of the Day
+# Sets the image as the desktop background - Only for Cinnamon desktops
+# Coded in Python 3.5 and tested on Linux Mint
+# Richard Denton - 18/08/2016
+# apod-desktop v1.1
 
+from bs4 import BeautifulSoup
 import requests
 import subprocess
 import os
+import sys
 
+APOD_URL = 'http://apod.nasa.gov/apod/astropix.html'
+IMAGE_SETTING = '"centered"'
 
 def get_url():
     """
     Returns the URL of today's Astronomy Picture of the Day
     """
-    # Open the APOD website
-    apod = requests.get('http://apod.nasa.gov/apod/astropix.html')
+    # Setup a list to contain all the links from the APOD site
+    links = []
 
-    # Convert the HTML source code into a string
-    src_code = str(apod.content)
+    # Open the APOD website and convert to BeautifulSoup - Exit script if the site fails to load
+    apod = requests.get(APOD_URL)
+    if apod.status_code != 200:
+        sys.exit()
+    soup = BeautifulSoup(apod.content, "lxml")
 
-    # Locate the URL for the image from the source code. The end of the URL is just before the word IMG
-    end = src_code.find('IMG') - 6
-    start = end
+    # Extract all links and place in the links list
+    for link in soup.find_all('a'):
+        links.append(link.get('href'))
 
-    # Loop to locate the start of the URL. The URL is enclosed in " " so the loop stops when reaching the first "
-    while src_code[start] != '"':
-        start -= 1
-
-    return 'http://apod.nasa.gov/apod/' + src_code[start + 1:end + 1]
-
+    # Return the image URL if found, else exit the script
+    if "jpg" in str(links[1]):
+        return 'http://apod.nasa.gov/apod/' + str(links[1])
+    else:
+        sys.exit()
 
 def download_image(url):
     """
@@ -37,6 +43,8 @@ def download_image(url):
     """
     # Open the URL
     res = requests.get(url)
+    if res.status_code != 200:
+        sys.exit()
 
     # Create a file to contain the image and write the file to it
     image = open('APOD.jpg', 'wb')
@@ -49,8 +57,4 @@ download_image(get_url())
 
 # Call BASH processes to set wallpaper and settings
 subprocess.run(['gsettings', 'set', 'org.cinnamon.desktop.background', 'picture-uri', 'file://' + os.getcwd() + '/APOD.jpg'])
-subprocess.run(['gsettings', 'set', 'org.cinnamon.desktop.background', 'picture-options', '"centered"'])
-
-
-
-
+subprocess.run(['gsettings', 'set', 'org.cinnamon.desktop.background', 'picture-options', IMAGE_SETTING])
